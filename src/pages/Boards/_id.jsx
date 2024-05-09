@@ -3,7 +3,7 @@ import Container from '@mui/material/Container'
 import AppBar from '~/components/AppBar/AppBar'
 import BoardBar from './BoardBar/BoardBar'
 import BoardContent from './BoardContent/BoardContent'
-
+import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
 // import { mockData } from '~/apis/mock-data'
 import {
   updateBoardDetailsAPI,
@@ -12,9 +12,6 @@ import {
 } from '~/apis'
 
 import { cloneDeep } from 'lodash'
-import Box from '@mui/material/Box'
-import CircularProgress from '@mui/material/CircularProgress'
-import Typography from '@mui/material/Typography'
 
 import {
   fetchBoardDetailsAPI,
@@ -64,12 +61,12 @@ function Board() {
    */
   const moveCardInTheSameColumn = (dndOrderedCards, dndOrderedCardIds, columnId) => {
     // Update cho chuẩn dữ liệu state Board
-    const newBoard = cloneDeep(board)
     /**
     * Cannot assign to read only property 'cards' of object
     * Trường hợp Immutability ở đây đã đụng tới giá trị cards đang được coi là chỉ đọc read only - (nested object - can thiệp sâu dữ liệu)
     */
 
+    const newBoard = cloneDeep(board)
     const columnToUpdate = newBoard.columns.find(column => column._id === columnId)
     if (columnToUpdate) {
       columnToUpdate.cards = dndOrderedCards
@@ -113,19 +110,7 @@ function Board() {
   }
 
   if (!board) {
-    return (
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 2,
-        width: '100vw',
-        height: '100vh'
-      }}>
-        <CircularProgress />
-        <Typography>Loading Board...</Typography>
-      </Box>
-    )
+    return <PageLoadingSpinner caption='Loading board...' />
   }
 
   return (

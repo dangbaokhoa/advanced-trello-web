@@ -13,6 +13,11 @@ import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 
+import { useDispatch } from 'react-redux'
+import { loginUserAPI } from '~/redux/user/userSlice'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify'
+
 import {
   EMAIL_RULE,
   PASSWORD_RULE,
@@ -23,12 +28,25 @@ import {
 import FieldErrorAlert from '~/components/Form/FieldErrorAlert'
 
 function LoginForm() {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const { register, handleSubmit, formState: { errors } } = useForm()
+  let [searchParams] = useSearchParams()
+  const registeredEmail = searchParams.get('registeredEmail')
+  const verifiedEmail = searchParams.get('verifiedEmail')
 
   const submitLogIn = (data) => {
-    console.log(data)
+    const { email, password } = data
+    toast.promise(
+      dispatch(loginUserAPI({ email, password })),
+      { pending: 'Logging in...' }
+    ).then(res => {
+      console.log(res)
+      if (!res.error) navigate('/')
+    })
   }
-  console.log(errors)
+
   return (
     <form onSubmit={handleSubmit(submitLogIn)}>
       <Zoom in={true} style={{ transitionDelay: '200ms' }}>
@@ -46,16 +64,20 @@ function LoginForm() {
             Author: TrungQuanDev
           </Box>
           <Box sx={{ marginTop: '1em', display: 'flex', justifyContent: 'center', flexDirection: 'column', padding: '0 1em' }}>
-            <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-              Your email&nbsp;
-              <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>trungquandev@gmail.com</Typography>
-              &nbsp;has been verified.<br />Now you can login to enjoy our services! Have a good day!
-            </Alert>
-            <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
-              An email has been sent to&nbsp;
-              <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>trungquandev@gmail.com</Typography>
-              <br />Please check and verify your account before logging in!
-            </Alert>
+            {verifiedEmail &&
+              <Alert severity="success" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
+                Your email&nbsp;
+                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{verifiedEmail}</Typography>
+                &nbsp;has been verified.<br />Now you can login to enjoy our services! Have a good day!
+              </Alert>
+            }
+            {registeredEmail &&
+              <Alert severity="info" sx={{ '.MuiAlert-message': { overflow: 'hidden' } }}>
+                An email has been sent to&nbsp;
+                <Typography variant="span" sx={{ fontWeight: 'bold', '&:hover': { color: '#fdba26' } }}>{registeredEmail}</Typography>
+                <br />Please check and verify your account before logging in!
+              </Alert>
+            }
           </Box>
           <Box sx={{ padding: '0 1em 1em 1em' }}>
             <Box sx={{ marginTop: '1em' }}>
@@ -90,6 +112,7 @@ function LoginForm() {
           </Box>
           <CardActions sx={{ padding: '0 1em 1em 1em' }}>
             <Button
+              className='interceptor-loading'
               type="submit"
               variant="contained"
               color="primary"

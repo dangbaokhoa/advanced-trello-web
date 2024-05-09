@@ -34,6 +34,8 @@ import {
 } from '~/redux/activeBoard/activeBoardSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { cloneDeep } from 'lodash'
+import ToggleFocusInput from '~/components/Form/ToggleFocusInput'
+import { updateColumnDetailsAPI } from '~/apis'
 
 function Column({ column }) {
   const dispatch = useDispatch()
@@ -142,6 +144,15 @@ function Column({ column }) {
     }).catch(() => {})
   }
 
+  const onUpdateColumnTitle = (newTitle) => {
+    updateColumnDetailsAPI(column._id, { title: newTitle }).then(() => {
+      const newBoard = cloneDeep(board)
+      const columnToUpdate = newBoard.columns.find(c => c._id === column._id)
+      if (columnToUpdate) columnToUpdate.title = newTitle
+      dispatch(updateCurrentActiveBoard(newBoard))
+    })
+  }
+
   // Phải bọc div ở đây vì vấn đề chiều cao của column khi kéo thả sẽ có bug kiểu kiểu flickering (video 32)
   return (
     <div ref={setNodeRef} style={dndKitColumnStyles} {...attributes}>
@@ -165,13 +176,18 @@ function Column({ column }) {
           alignItems: 'center',
           justifyContent: 'space-between'
         }}>
-          <Typography variant="h6" sx={{
+          {/* <Typography variant="h6" sx={{
             fontSize: '1rem',
             fontWeight: 'bold',
             cursor: 'pointer'
           }}>
             {column?.title}
-          </Typography>
+          </Typography> */}
+          <ToggleFocusInput
+            value={column?.title}
+            onChangedValue={onUpdateColumnTitle}
+            data-no-dnd="true"
+          />
           <Box>
             <Tooltip title="More options">
               <ExpandMoreIcon
@@ -292,6 +308,7 @@ function Column({ column }) {
               />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <Button
+                  className='interceptor-loading'
                   onClick={addNewCard}
                   variant="contained" color="success" size="small"
                   sx={{
