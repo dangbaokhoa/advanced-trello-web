@@ -18,13 +18,13 @@ function ToggleFocusInput({ value, onChangedValue, inputFontSize = '16px', ...pr
     if (inputValue === value) return
 
     // Khi giá trị có thay đổi ok thì gọi lên func ở Props cha để xử lý
-    onChangedValue(inputValue)
+    onChangedValue(inputValue.trim())
   }
 
   return (
     <TextField
       id="toggle-focus-input-controlled"
-      fullWidth
+      // fullWidth
       variant='outlined'
       size="small"
       value={inputValue}
