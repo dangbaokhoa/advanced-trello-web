@@ -90,7 +90,6 @@ function AccountTab() {
       }
       // Lưu ý, dù có lỗi hoặc thành công thì cũng phải clear giá trị của file input, nếu không thì sẽ không thể chọn cùng một file liên tiếp được
       e.target.value = ''
-
     })
   }
 
