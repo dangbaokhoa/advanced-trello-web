@@ -118,8 +118,8 @@ function Board() {
   // console.log('activeCard', activeCard)
   return (
     <Container disableGutters maxWidth={false} sx={{ height: '100vh' }}>
-      {/* Modal Active Card, check đóng/mở dựa theo điều kiện có tồn tại data activeCard lưu trong Redux hay không thì mới render. Mỗi thời điểm chỉ tồn tại một cái Modal Card đang Active */}
-      {activeCard && <ActiveCard />}
+      {/* Modal Active Card, check đóng/mở dựa theo state isShowModalActiveCard lưu trong redux */}
+      <ActiveCard />
 
       {/* Các thành phần còn lại của Board Details */}
       <AppBar />
