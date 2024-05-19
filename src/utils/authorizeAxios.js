@@ -93,9 +93,7 @@ authorizedAxiosInstance.interceptors.response.use((response) => {
       // Bước 2: Bước Quan trọng: Return lại axios instance của chúng ta kết hợp các originalRequests để gọi lại những api ban đầu bị lỗi
       return authorizedAxiosInstance(originalRequests)
     })
-
   }
-
 
   // Xử lý tập trung phần hiển thị thông báo lỗi trả về từ mọi API ở đây (viết code một lần: Clean Code)
   // console.log error ra là sẽ thấy cấu trúc data đẫn tới message lỗi như dưới đây
