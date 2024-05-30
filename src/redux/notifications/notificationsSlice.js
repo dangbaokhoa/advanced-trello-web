@@ -15,7 +15,7 @@ export const fetchInvitationsAPI = createAsyncThunk(
     const response = await authorizedAxiosInstance.get(`${API_ROOT}/v1/invitations`)
     // Lưu ý: axios sẽ trả kết quả về qua property của nó là data
     return response.data
-}
+  }
 )
 
 export const updateBoardInvitationAPI = createAsyncThunk(
